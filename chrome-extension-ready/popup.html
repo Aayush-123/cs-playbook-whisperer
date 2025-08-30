@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS Playbook Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 400px;
+            height: 600px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow: hidden;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .header-text h1 {
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .header-text p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 12px;
+            margin: 0;
+        }
+
+        .new-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .new-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            height: calc(100% - 69px);
+            overflow-y: auto;
+            background: white;
+        }
+
+        .form-container, .playbook-container {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #374151;
+            font-size: 14px;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .health-options {
+            display: flex;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .health-option {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .health-option.healthy {
+            background: #dcfce7;
+            border-color: #16a34a;
+            color: #16a34a;
+        }
+
+        .health-option.at-risk {
+            background: #fef3c7;
+            border-color: #d97706;
+            color: #d97706;
+        }
+
+        .health-option.critical {
+            background: #fee2e2;
+            border-color: #dc2626;
+            color: #dc2626;
+        }
+
+        .health-option.selected {
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.5);
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .playbook-section {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: #f3f4f6;
+            padding: 12px 16px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .section-title {
+            font-weight: 600;
+            color: #374151;
+            font-size: 14px;
+        }
+
+        .section-content {
+            padding: 16px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .section-content.collapsed {
+            display: none;
+        }
+
+        .copy-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: #5a67d8;
+        }
+
+        .copy-btn.copied {
+            background: #16a34a;
+        }
+
+        .action-item {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 8px;
+        }
+
+        .action-priority {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+
+        .priority-high {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .priority-medium {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .priority-low {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .scroll-area {
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 8px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .stat-number {
+            font-size: 18px;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #6b7280;
+            margin-top: 2px;
+        }
+
+        .toggle-icon {
+            transition: transform 0.2s;
+        }
+
+        .toggle-icon.rotated {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="logo">CS</div>
+                <div class="header-text">
+                    <h1>CS Playbook</h1>
+                    <p>Quick strategy generator</p>
+                </div>
+            </div>
+            <button class="new-btn" id="newBtn" style="display: none;">New</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="formContainer" class="form-container">
+            <form id="customerForm">
+                <div class="form-group">
+                    <label for="customerName">Customer Name</label>
+                    <input type="text" id="customerName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="contactName">Contact Name</label>
+                    <input type="text" id="contactName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="contactRole">Contact Role</label>
+                    <input type="text" id="contactRole" placeholder="e.g., VP of Engineering" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="accountValue">Account Value</label>
+                    <select id="accountValue" required>
+                        <option value="">Select value range</option>
+                        <option value="< $10K">< $10K</option>
+                        <option value="$10K - $50K">$10K - $50K</option>
+                        <option value="$50K - $100K">$50K - $100K</option>
+                        <option value="$100K - $500K">$100K - $500K</option>
+                        <option value="$500K+">$500K+</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Account Health</label>
+                    <div class="health-options">
+                        <div class="health-option healthy" data-health="healthy">Healthy</div>
+                        <div class="health-option at-risk" data-health="at-risk">At Risk</div>
+                        <div class="health-option critical" data-health="critical">Critical</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="scenario">Scenario</label>
+                    <select id="scenario" required>
+                        <option value="">Select scenario</option>
+                        <option value="payment_issues">Payment/Billing Issues</option>
+                        <option value="usage_decline">Usage Decline</option>
+                        <option value="expansion_opportunity">Expansion Opportunity</option>
+                        <option value="technical_problems">Technical Problems</option>
+                        <option value="executive_change">Executive Change</option>
+                        <option value="renewal_risk">Renewal Risk</option>
+                        <option value="onboarding_issues">Onboarding Issues</option>
+                        <option value="custom">Custom Scenario</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="customSignal">Signal/Issue Description</label>
+                    <textarea id="customSignal" placeholder="Describe the specific signal or issue you need to address..." required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    Generate CS Playbook
+                </button>
+            </form>
+        </div>
+
+        <div id="playbookContainer" class="playbook-container hidden">
+            <div class="scroll-area">
+                <div id="playbookContent">
+                    <!-- Playbook content will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>
