@@ -41,12 +41,22 @@ const Index = () => {
               </div>
             </div>
             {playbook && (
-              <button
-                onClick={resetForm}
-                className="px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-lg transition-colors text-sm font-medium"
-              >
-                New Playbook
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={resetForm}
+                  className="px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-lg transition-colors text-sm font-medium"
+                >
+                  New Playbook
+                </button>
+                <a
+                  href="https://chrome.google.com/webstore/detail/cs-playbook-generator"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-lg transition-colors text-sm font-medium"
+                >
+                  Get Chrome Extension
+                </a>
+              </div>
             )}
           </div>
         </div>

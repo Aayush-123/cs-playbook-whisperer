@@ -1,0 +1,11 @@
+{
+  "name": "cs-playbook-extension-build",
+  "version": "1.0.0",
+  "description": "Build scripts for CS Playbook Generator Chrome Extension",
+  "scripts": {
+    "build:extension": "node scripts/build-extension.js",
+    "create:icons": "node scripts/create-icons.js",
+    "prepare:extension": "npm run create:icons && npm run build:extension"
+  },
+  "type": "module"
+}
