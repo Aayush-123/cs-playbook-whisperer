@@ -7,6 +7,7 @@ import { Button } from './ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { CustomerContext, CSScenario, scenarioLabels } from '@/types/playbook';
 import { BadgeVariant } from './ui/badge-variant';
+import { WizardCustomerForm } from './WizardCustomerForm';
 
 interface CompactCustomerFormProps {
   onSubmit: (context: CustomerContext) => void;
@@ -20,6 +21,11 @@ const healthColors = {
 } as const;
 
 export function CompactCustomerForm({ onSubmit, isLoading }: CompactCustomerFormProps) {
+  // Use the enhanced wizard form for better UX
+  return <WizardCustomerForm onSubmit={onSubmit} isLoading={isLoading} />;
+}
+
+function LegacyCompactCustomerForm({ onSubmit, isLoading }: CompactCustomerFormProps) {
   const [context, setContext] = useState<CustomerContext>({
     customerName: '',
     contactName: '',

@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { BadgeVariant } from './ui/badge-variant';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
+import { EnhancedPlaybookDisplay } from './EnhancedPlaybookDisplay';
 
 interface CompactPlaybookDisplayProps {
   playbook: CSPlaybook;
@@ -19,6 +20,11 @@ const priorityColors = {
 } as const;
 
 export function CompactPlaybookDisplay({ playbook }: CompactPlaybookDisplayProps) {
+  // Use the enhanced display for better UX
+  return <EnhancedPlaybookDisplay playbook={playbook} />;
+}
+
+function LegacyCompactPlaybookDisplay({ playbook }: CompactPlaybookDisplayProps) {
   const [copiedSection, setCopiedSection] = useState<string | null>(null);
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     objectives: true,
